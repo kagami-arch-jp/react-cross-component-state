@@ -1,0 +1,33 @@
+{
+  "name": "react-cross-component-state",
+  "version": "1.0.3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "description": "A React hook-based library for managing and sharing state across multiple components.",
+  "keywords": [
+    "react",
+    "hooks",
+    "state",
+    "shared",
+    "cross-component",
+    "observer-pattern"
+  ],
+  "author": "kagami-arch-jp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kagami-arch-jp/react-cross-component-state.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kagami-arch-jp/react-cross-component-state/issues"
+  },
+  "homepage": "https://github.com/kagami-arch-jp/react-cross-component-state",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
+    "@babel/preset-env": "^7.29.0"
+  }
+}
