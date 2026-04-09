@@ -28,7 +28,7 @@ export default function createSharedState(initialValue) {
       return [stateValue, updateState];
     },
     setValue: value => {
-      stateRef.value = typeof value==='function'? value(): value;
+      stateRef.value = typeof value==='function'? value(stateRef.value): value;
       for (let setter of stateRef.subscribers) {
         setter(value);
       }

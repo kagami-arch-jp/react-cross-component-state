@@ -63,7 +63,7 @@
         return [stateValue, updateState];
       },
       setValue: function setValue(value) {
-        stateRef.value = typeof value === 'function' ? value() : value;
+        stateRef.value = typeof value === 'function' ? value(stateRef.value) : value;
         var _iterator2 = _createForOfIteratorHelper(stateRef.subscribers),
           _step2;
         try {
