@@ -1,8 +1,12 @@
 import React from 'react';
 
+function resolveValue(value, prevValue) {
+  return typeof value === 'function' ? value(prevValue) : value
+}
+
 export default function createSharedState(initialValue) {
   const stateRef = {
-    value: typeof initialValue === 'function' ? initialValue() : initialValue,
+    value: resolveValue(initialValue),
     subscribers: new Set(),
   };
 
@@ -19,18 +23,18 @@ export default function createSharedState(initialValue) {
       }, []);
 
       const updateState = newValue => {
-        stateRef.value = newValue;
+        stateRef.value = resolveValue(newValue, stateRef.value)
         for (const subscriber of subscribers) {
-          subscriber(newValue);
+          subscriber(stateRef.value);
         }
       };
 
       return [stateValue, updateState];
     },
     setValue: value => {
-      stateRef.value = typeof value==='function'? value(stateRef.value): value;
+      stateRef.value = resolveValue(value, stateRef.value)
       for (let setter of stateRef.subscribers) {
-        setter(value);
+        setter(stateRef.value);
       }
     },
     getValue: () => stateRef.value,

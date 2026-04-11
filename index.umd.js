@@ -26,9 +26,12 @@
   function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
   function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
   function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+  function resolveValue(value, prevValue) {
+    return typeof value === 'function' ? value(prevValue) : value;
+  }
   function createSharedState(initialValue) {
     var stateRef = {
-      value: typeof initialValue === 'function' ? initialValue() : initialValue,
+      value: resolveValue(initialValue),
       subscribers: new Set()
     };
     var sharedState = {
@@ -46,13 +49,13 @@
           };
         }, []);
         var updateState = function updateState(newValue) {
-          stateRef.value = newValue;
+          stateRef.value = resolveValue(newValue, stateRef.value);
           var _iterator = _createForOfIteratorHelper(subscribers),
             _step;
           try {
             for (_iterator.s(); !(_step = _iterator.n()).done;) {
               var subscriber = _step.value;
-              subscriber(newValue);
+              subscriber(stateRef.value);
             }
           } catch (err) {
             _iterator.e(err);
@@ -63,13 +66,13 @@
         return [stateValue, updateState];
       },
       setValue: function setValue(value) {
-        stateRef.value = typeof value === 'function' ? value(stateRef.value) : value;
+        stateRef.value = resolveValue(value, stateRef.value);
         var _iterator2 = _createForOfIteratorHelper(stateRef.subscribers),
           _step2;
         try {
           for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
             var setter = _step2.value;
-            setter(value);
+            setter(stateRef.value);
           }
         } catch (err) {
           _iterator2.e(err);
