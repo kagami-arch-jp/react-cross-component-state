@@ -11,34 +11,28 @@ export default function createSharedState(initialValue) {
   };
 
   const sharedState = {
-    use: () => {
-      const { value, subscribers } = stateRef;
-      const [stateValue, setStateValue] = React.useState(value);
-
-      React.useEffect(() => {
-        subscribers.add(setStateValue);
-        return () => {
-          subscribers.delete(setStateValue);
-        };
-      }, []);
-
-      const updateState = newValue => {
-        stateRef.value = resolveValue(newValue, stateRef.value)
-        for (const subscriber of subscribers) {
-          subscriber(stateRef.value);
-        }
-      };
-
-      return [stateValue, updateState];
-    },
-    setValue: value => {
-      stateRef.value = resolveValue(value, stateRef.value)
-      for (let setter of stateRef.subscribers) {
-        setter(stateRef.value);
+    setValue: newValue => {
+      stateRef.value = resolveValue(newValue, stateRef.value)
+      for (const subscriber of stateRef.subscribers) {
+        subscriber(stateRef.value);
       }
     },
     getValue: () => stateRef.value,
-  };
+  }
+
+  sharedState.use = () => {
+    const { value, subscribers } = stateRef;
+    const [stateValue, setStateValue] = React.useState(value);
+
+    React.useEffect(() => {
+      subscribers.add(setStateValue);
+      return () => {
+        subscribers.delete(setStateValue);
+      };
+    }, []);
+
+    return [stateValue, (...x)=>sharedState.setValue(...x)];
+  }
 
   sharedState.useValue = () => sharedState.use()[0];
 
